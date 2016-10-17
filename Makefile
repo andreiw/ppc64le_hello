@@ -14,7 +14,7 @@ endif
 CROSS ?= ppc64le-linux
 CC = $(CROSS)-gcc
 
-ARCH_FLAGS = -msoft-float -mpowerpc64 -mcpu=power8 -mtune=power8 -mabi=elfv2 \
+ARCH_FLAGS = -m64 -msoft-float -mpowerpc64 -mcpu=power8 -mtune=power8 -mabi=elfv2 \
              -mlittle-endian -mno-strict-align -mno-multiple \
              -mno-pointers-to-nested-functions -mcmodel=large -fno-builtin \
              -fno-stack-protector -I./ -Wall -Werror
@@ -76,7 +76,7 @@ asm-offset.s: asm-offset.c
 	@rm -f $*.d.tmp
 
 $(NAME): asm-offset.h $(OBJ)
-	$(CC) $(ARCH_FLAGS) $(BUILD_FLAGS) -Wl,--build-id=none -Wl,--EL -T ld.script -ffreestanding -nostdlib -Ttext=0x8000000020010000 -lgcc -o $@ $^
+	$(CC) $(ARCH_FLAGS) $(BUILD_FLAGS) -fuse-ld=gold -Wl,--build-id=none -Wl,--EL -T ld.script -ffreestanding -nostdlib -Ttext=0x8000000020010000 -lgcc -o $@ $^
 
 clean:
 	$(RM) $(NAME) *.o *.o.s *.d asm-offset.h asm-offset.s
